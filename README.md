@@ -2,7 +2,7 @@
 
 Hello today we are going to apply the light dark mode transition in React with you. (with [Tailwind](https://tailwindcss.com/))
 
-![image](https://github.com/ozcaneren/react-toggle-dark-mode/assets/100240225/bd1243f2-5e9b-4188-8239-966797950cfb)
+![](https://github.com/ozcaneren/react-toggle-dark-mode/blob/master/public/GIF.gif)
 
 
 

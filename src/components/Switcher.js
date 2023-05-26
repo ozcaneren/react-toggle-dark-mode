@@ -13,7 +13,7 @@ export default function Switcher() {
 
   return (
     <>
-      <div className="flex flex-row items-center">
+      <div>
         <DarkModeSwitch
           checked={darkSide}
           onChange={toggleDarkMode}

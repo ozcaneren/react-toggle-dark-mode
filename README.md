@@ -1,70 +1,142 @@
-# Getting Started with Create React App
+### `React Light Dark Mode`
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Hello today we are going to apply the light dark mode transition in React with you. (with [Tailwind](https://tailwindcss.com/))
 
-## Available Scripts
+![image](https://github.com/ozcaneren/react-toggle-dark-mode/assets/100240225/bd1243f2-5e9b-4188-8239-966797950cfb)
 
-In the project directory, you can run:
 
-### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### `Setup Tailwind`
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+[Tailwind install with Create React App](https://tailwindcss.com/docs/guides/create-react-app)
 
-### `npm test`
+### Installation
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```bash
+npm install -D tailwindcss
+npx tailwindcss init
+```
 
-### `npm run build`
+### tailwind.config.js
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```js
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: [
+    "./src/**/*.{js,jsx,ts,tsx}",
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+}
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### index.css
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
 
-### `npm run eject`
+### `create hook directory & create useDarkSide.js`
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+![image](https://github.com/ozcaneren/react-toggle-dark-mode/assets/100240225/a0ad1053-7e3c-4f38-93b6-984202db799e)
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```bash
+mkdir hook & cd hook
+touch useDarkSide.js
+```
+### useDarkSide.js
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```js
+import { useEffect, useState } from "react";
+export default function useDarkSide() {
+  const [theme, setTheme] = useState(localStorage.theme);
+  const colorTheme = theme === "dark" ? "light" : "dark";
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+  useEffect(() => {
+    const root = window.document.documentElement;
+    root.classList.remove(colorTheme);
+    root.classList.add(theme);
+    localStorage.setItem("theme", theme);
+  }, [theme, colorTheme]);
 
-## Learn More
+  return [colorTheme, setTheme];
+}
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### `create components folder & create Switcher.js`
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+![image](https://github.com/ozcaneren/react-toggle-dark-mode/assets/100240225/89d9e8e2-9a5b-4ec4-b922-3e72f9c98938)
 
-### Code Splitting
+```bash
+mkdir components & cd components <br/>
+touch Switcher.js
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### Install Module [react-toggle-dark-mode](https://www.npmjs.com/package/react-toggle-dark-mode)
 
-### Analyzing the Bundle Size
+```bash
+npm install react-toggle-dark-mode
+```
+### Switcher.js
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+```js
+import React, { useState } from 'react';
+import useDarkSide from '../hook/useDarkSide';
+import { DarkModeSwitch } from "react-toggle-dark-mode";
 
-### Making a Progressive Web App
+export default function Switcher() {
+  const [colorTheme, setTheme] = useDarkSide();
+  const [darkSide, setDarkSide] = useState( colorTheme === "light" ? true : false );
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+  const toggleDarkMode = (checked) => {
+    setTheme(colorTheme)
+    setDarkSide(checked);
+  };
 
-### Advanced Configuration
+  return (
+    <>
+      <div>
+        <DarkModeSwitch
+          checked={darkSide}
+          onChange={toggleDarkMode}
+          size={33}
+        />
+      </div>
+    </>
+  );
+}
+```
+### `App.js`
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+```js
+import Switcher from "./components/Switcher";
 
-### Deployment
+function App() {
+  return (
+    <>
+      <div className="container mx-auto my-10 flex flex-col justify-center items-center text-center gap-8 bg-white dark:bg-black">
+        <Switcher />
+        <h1 className="font-bold text-2xl text-black dark:text-white">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Nulla at volutpat diam ut venenatis tellus. Volutpat diam ut venenatis tellus. Justo laoreet sit amet cursus sit amet dictum. Facilisis leo vel fringilla est ullamcorper eget. Pulvinar neque laoreet suspendisse interdum consectetur libero id faucibus. Vel turpis nunc eget lorem dolor sed. Hendrerit gravida rutrum quisque non. Rhoncus urna neque viverra justo nec ultrices dui sapien. Velit egestas dui id ornare arcu. Placerat duis ultricies lacus sed turpis tincidunt id aliquet risus. Dictum non consectetur a erat nam at lectus urna.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+          Eget sit amet tellus cras adipiscing enim eu turpis. Ac tincidunt vitae semper quis lectus nulla at. Nunc congue nisi vitae suscipit. Euismod elementum nisi quis eleifend. Diam maecenas sed enim ut sem viverra aliquet eget. Nisi porta lorem mollis aliquam ut porttitor leo a diam. Potenti nullam ac tortor vitae. Nunc congue nisi vitae suscipit tellus mauris. Nibh praesent tristique magna sit amet purus gravida. Amet consectetur adipiscing elit duis tristique sollicitudin nibh. Ornare quam viverra orci sagittis eu. Morbi tempus iaculis urna id.
 
-### `npm run build` fails to minify
+          Pretium vulputate sapien nec sagittis aliquam malesuada. Phasellus egestas tellus rutrum tellus pellentesque. Cursus risus at ultrices mi tempus imperdiet nulla. Ut aliquam purus sit amet luctus. Massa eget egestas purus viverra accumsan in nisl nisi. Ut diam quam nulla porttitor massa id neque. Adipiscing tristique risus nec feugiat in fermentum. Et tortor consequat id porta nibh venenatis. Libero volutpat sed cras ornare. Urna nunc id cursus metus aliquam. Iaculis urna id volutpat lacus laoreet non curabitur gravida arcu. Id diam maecenas ultricies mi. Amet cursus sit amet dictum sit amet justo donec enim. Felis eget velit aliquet sagittis. Fermentum dui faucibus in ornare quam viverra orci. Accumsan tortor posuere ac ut consequat semper viverra nam. Ipsum suspendisse ultrices gravida dictum fusce ut placerat orci. Neque sodales ut etiam sit. Sed elementum tempus egestas sed sed risus pretium quam vulputate. Viverra nam libero justo laoreet sit amet.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+          Leo vel orci porta non pulvinar. Iaculis nunc sed augue lacus viverra vitae congue eu. Turpis in eu mi bibendum. Arcu cursus euismod quis viverra nibh cras pulvinar mattis. Quis lectus nulla at volutpat. Faucibus turpis in eu mi bibendum neque egestas congue. Enim nunc faucibus a pellentesque. In iaculis nunc sed augue lacus. Potenti nullam ac tortor vitae purus faucibus ornare suspendisse sed. Ullamcorper velit sed ullamcorper morbi tincidunt ornare massa eget. Vel turpis nunc eget lorem dolor sed viverra ipsum nunc. Sit amet consectetur adipiscing elit ut. Nec sagittis aliquam malesuada bibendum arcu. Tellus rutrum tellus pellentesque eu tincidunt tortor. Blandit libero volutpat sed cras ornare arcu dui vivamus arcu. Sit amet est placerat in egestas erat. Bibendum neque egestas congue quisque egestas diam.
+
+          Pulvinar etiam non quam lacus suspendisse faucibus interdum posuere lorem. Id donec ultrices tincidunt arcu non. Duis convallis convallis tellus id interdum. Sollicitudin nibh sit amet commodo. Mauris nunc congue nisi vitae suscipit tellus mauris. Maecenas pharetra convallis posuere morbi leo urna molestie. Ac tortor vitae purus faucibus ornare suspendisse sed nisi.
+        </h1>
+      </div>
+    </>
+  );
+}
+
+export default App;
+
+```
+
